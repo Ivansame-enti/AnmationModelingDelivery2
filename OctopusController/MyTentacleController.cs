@@ -31,12 +31,15 @@ namespace OctopusController
 
             switch (tentacleMode){
                 case TentacleMode.LEG:
+
                     //TODO: in _endEffectorsphere you keep a reference to the base of the leg
                     break;
                 case TentacleMode.TAIL:
+
                     //TODO: in _endEffectorsphere you keep a reference to the red sphere 
                     break;
                 case TentacleMode.TENTACLE:
+
                     //TODO: in _endEffectorphere you  keep a reference to the sphere with a collider attached to the endEffector
                     break;
             }
