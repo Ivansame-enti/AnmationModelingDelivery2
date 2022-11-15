@@ -51,7 +51,7 @@ namespace OctopusController
         //TODO: Check when to start the animation towards target and implement Gradient Descent method to move the joints.
         public void NotifyTailTarget(Transform target)
         {
-            //tailTarget = target;
+            tailTarget = target;
         }
 
         //TODO: Notifies the start of the walking animation
