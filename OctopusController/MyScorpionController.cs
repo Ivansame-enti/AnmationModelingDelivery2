@@ -15,6 +15,9 @@ namespace OctopusController
         Transform tailEndEffector;
         MyTentacleController _tail;
         float animationRange;
+        float[] Solution = null;
+        private float DeltaGradient = 0.1f; // Used to simulate gradient (degrees)
+        private float LearningRate = 0.1f; // How much we move depending on the gradient
 
         //LEGS
         Transform[] legTargets;
@@ -45,6 +48,7 @@ namespace OctopusController
                 Debug.Log(_tail.Bones[i]);
             }*/
             //Debug.Log(_tail.Bones.Length);
+            Solution = new float[_tail.Bones.Length];
             //TODO: Initialize anything needed for the Gradient Descent implementation
         }
 
@@ -52,6 +56,8 @@ namespace OctopusController
         public void NotifyTailTarget(Transform target)
         {
             tailTarget = target;
+            Debug.Log(Vector3.Distance(_tail.Bones[_tail.Bones.Length-1].position, target.position));
+            if (Vector3.Distance(_tail.Bones[_tail.Bones.Length - 1].position, target.position) < 3) UpdateIK();
         }
 
         //TODO: Notifies the start of the walking animation
@@ -64,7 +70,9 @@ namespace OctopusController
 
         public void UpdateIK()
         {
- 
+            //TODO
+
+            updateTail();
         }
         #endregion
 
@@ -79,15 +87,60 @@ namespace OctopusController
         //TODO: implement Gradient Descent method to move tail if necessary
         private void updateTail()
         {
-            /*float gradient = 0;
-            float angle = _tail.Bones[i];
-            float p = DistanceFromTarget(target, _tail.Bones);
-            _tail.Bones[i] += Time.deltaTime;
-            float pDelta = DistanceFromTarget(target, _tail.Bones);
-            gradient = (pDelta - p) / Time.deltaTime;
-            _tail.Bones[i] = angle;
-            return gradient;*/
+            for (int i = 0; i < _tail.Bones.Length; i++)
+            {
+                float gradient = CalculateGradient(tailTarget.position, Solution, i, DeltaGradient);
+                Solution[i] -= LearningRate * gradient;
+            }
+
+            for (int i = 0; i < _tail.Bones.Length; i++)
+            {
+                _tail.Bones[i]. SetAngle(Solution[i]);
+            }
+
+            
         }
+
+        
+
+        private float CalculateGradient(Vector3 target, float[] Solution, int i, float delta)
+        {
+            float gradient = 0;
+            float angle = Solution[i];
+            float p = DistanceFromTarget(target, Solution);
+            Solution[i] += delta;
+            float pDelta = DistanceFromTarget(target, Solution);
+            gradient = (pDelta - p) / delta;
+            Solution[i] = angle;
+            return gradient;
+        }
+
+        private float DistanceFromTarget(Vector3 target, float[] Solution)
+        {
+            Vector3 point = ForwardKinematics(Solution);
+            return Vector3.Distance(point, target);
+        }
+
+        public PositionRotation ForwardKinematics(float[] Solution)
+        {
+            Vector3 prevPoint = _tail.Bones[0].transform.position;
+
+            // Takes object initial rotation into account
+            Quaternion rotation = transform.rotation;
+
+            //TODO
+            for (int i = 1; i < _tail.Bones.Length; i++)
+            {
+                rotation *= Quaternion.AngleAxis(Solution[i - 1], _tail.Bones[i - 1].Axis);
+                Vector3 nextPoint = prevPoint + rotation * _tail.Bones[i].StartOffset;
+
+                prevPoint = nextPoint;
+            }
+
+            // The end of the effector
+            return new PositionRotation(prevPoint, rotation);
+        }
+
         //TODO: implement fabrik method to move legs 
         private void updateLegs()
         {
