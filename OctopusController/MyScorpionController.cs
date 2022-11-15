@@ -40,13 +40,18 @@ namespace OctopusController
         {
             _tail = new MyTentacleController();
             _tail.LoadTentacleJoints(TailBase, TentacleMode.TAIL);
+            /*for (int i=0;i<_tail.Bones.Length;i++)
+            {
+                Debug.Log(_tail.Bones[i]);
+            }*/
+            //Debug.Log(_tail.Bones.Length);
             //TODO: Initialize anything needed for the Gradient Descent implementation
         }
 
         //TODO: Check when to start the animation towards target and implement Gradient Descent method to move the joints.
         public void NotifyTailTarget(Transform target)
         {
-
+            //tailTarget = target;
         }
 
         //TODO: Notifies the start of the walking animation
@@ -74,7 +79,14 @@ namespace OctopusController
         //TODO: implement Gradient Descent method to move tail if necessary
         private void updateTail()
         {
-
+            /*float gradient = 0;
+            float angle = _tail.Bones[i];
+            float p = DistanceFromTarget(target, _tail.Bones);
+            _tail.Bones[i] += Time.deltaTime;
+            float pDelta = DistanceFromTarget(target, _tail.Bones);
+            gradient = (pDelta - p) / Time.deltaTime;
+            _tail.Bones[i] = angle;
+            return gradient;*/
         }
         //TODO: implement fabrik method to move legs 
         private void updateLegs()

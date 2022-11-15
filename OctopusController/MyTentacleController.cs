@@ -35,6 +35,15 @@ namespace OctopusController
                     //TODO: in _endEffectorsphere you keep a reference to the base of the leg
                     break;
                 case TentacleMode.TAIL:
+                    _bones = new Transform[6];
+                    _bones[0] = root;
+
+                    for (int i = 1; _bones[i - 1].childCount > 0; i++)
+                        {
+                            _bones[i] = _bones[i - 1].GetChild(1);
+                        }
+
+                    _endEffectorSphere = _bones[_bones.Length-1];
 
                     //TODO: in _endEffectorsphere you keep a reference to the red sphere 
                     break;
