@@ -7,7 +7,30 @@ using UnityEngine;
 
 namespace OctopusController
 {
-  
+
+    public struct PositionRotation
+    {
+        Vector3 position;
+        Quaternion rotation;
+
+        public PositionRotation(Vector3 position, Quaternion rotation)
+        {
+            this.position = position;
+            this.rotation = rotation;
+        }
+
+        // PositionRotation to Vector3
+        public static implicit operator Vector3(PositionRotation pr)
+        {
+            return pr.position;
+        }
+        // PositionRotation to Quaternion
+        public static implicit operator Quaternion(PositionRotation pr)
+        {
+            return pr.rotation;
+        }
+    }
+
     public class MyScorpionController
     {
         //TAIL
@@ -56,7 +79,7 @@ namespace OctopusController
         public void NotifyTailTarget(Transform target)
         {
             tailTarget = target;
-            Debug.Log(Vector3.Distance(_tail.Bones[_tail.Bones.Length-1].position, target.position));
+            //Debug.Log(Vector3.Distance(_tail.Bones[_tail.Bones.Length-1].position, target.position));
             if (Vector3.Distance(_tail.Bones[_tail.Bones.Length - 1].position, target.position) < 3) UpdateIK();
         }
 
@@ -95,14 +118,13 @@ namespace OctopusController
 
             for (int i = 0; i < _tail.Bones.Length; i++)
             {
-                _tail.Bones[i]. SetAngle(Solution[i]);
+                //_tail.Bones[i]. SetAngle(Solution[i]);
             }
 
             
         }
 
         
-
         private float CalculateGradient(Vector3 target, float[] Solution, int i, float delta)
         {
             float gradient = 0;
@@ -126,13 +148,15 @@ namespace OctopusController
             Vector3 prevPoint = _tail.Bones[0].transform.position;
 
             // Takes object initial rotation into account
-            Quaternion rotation = transform.rotation;
-
+            Quaternion rotation = _tail.Bones[0].transform.rotation;
+            float angle;
+            Vector3 axis;
             //TODO
             for (int i = 1; i < _tail.Bones.Length; i++)
             {
-                rotation *= Quaternion.AngleAxis(Solution[i - 1], _tail.Bones[i - 1].Axis);
-                Vector3 nextPoint = prevPoint + rotation * _tail.Bones[i].StartOffset;
+                _tail.Bones[i - 1].rotation.ToAngleAxis(out angle, out axis);
+                rotation *= Quaternion.AngleAxis(Solution[i - 1], axis);
+                Vector3 nextPoint = prevPoint + rotation * _tail.Bones[i].transform.localPosition;
 
                 prevPoint = nextPoint;
             }
