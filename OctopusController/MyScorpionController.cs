@@ -42,7 +42,7 @@ namespace OctopusController
         Vector3[] _tailAxis = null;
         Vector3[] _tailOffset = null;
         private float DeltaGradient = 0.1f; // Used to simulate gradient (degrees)
-        private float LearningRate = 0.1f; // How much we move depending on the gradient
+        private float LearningRate = 3.0f; // How much we move depending on the gradient
 
         //LEGS
         Transform[] legTargets;
@@ -71,20 +71,28 @@ namespace OctopusController
             _tailAngles = new float[_tail.Bones.Length];
             _tailAxis = new Vector3[_tail.Bones.Length];
             _tailOffset = new Vector3[_tail.Bones.Length];
+
             _tailAxis[0] = new Vector3(0, 0 ,1);
             _tailAxis[1] = new Vector3(1, 0, 0);
             _tailAxis[2] = new Vector3(1, 0, 0);
             _tailAxis[3] = new Vector3(1, 0, 0);
             _tailAxis[4] = new Vector3(1, 0, 0);
             _tailAxis[5] = new Vector3(1, 0, 0);
+
+            for (int i = 0; i < _tailOffset.Length; i++)
+            {
+                if (i != 0) _tailOffset[i] = Quaternion.Inverse(_tail.Bones[i - 1].rotation) * (_tail.Bones[i].position - _tail.Bones[i-1].position);
+                else _tailOffset[i] = _tail.Bones[i].position;
+            }
         }
 
         //TODO: Check when to start the animation towards target and implement Gradient Descent method to move the joints.
         public void NotifyTailTarget(Transform target)
         {
-            
-            //Debug.Log(Vector3.Distance(_tail.Bones[_tail.Bones.Length-1].position, target.position));
-            if (Vector3.Distance(_tail.Bones[_tail.Bones.Length - 1].position, target.position) < 3) tailTarget = target;
+            if (Vector3.Distance(_tail.Bones[_tail.Bones.Length - 1].position, target.position) < 3)
+            {
+                tailTarget = target;
+            }
         }
 
         //TODO: Notifies the start of the walking animation
@@ -98,9 +106,7 @@ namespace OctopusController
         public void UpdateIK()
         {
             //TODO
-            for(int i=0; i< _tail.Bones.Length;i++)
-            Debug.Log(_tail.Bones[i]);
-            //updateTail();
+            updateTail();
         }
         #endregion
 
@@ -125,7 +131,14 @@ namespace OctopusController
 
                 for (int i = 0; i < _tail.Bones.Length; i++)
                 {
-                    _tail.Bones[i].localRotation = Quaternion.AngleAxis(_tailAngles[i], _tailAxis[i]);
+                    //_tail.Bones[i].localRotation = Quaternion.AngleAxis(_tailAngles[i], _tailAxis[i]);
+                    /*if (_tailAxis[i] == new Vector3(1,0,0)) _tail.Bones[i].localEulerAngles = new Vector3(_tailAngles[i], _tail.Bones[i].localEulerAngles.y, _tail.Bones[i].localEulerAngles.z);
+                    else if (_tailAxis[i] == new Vector3(0, 1, 0)) _tail.Bones[i].localEulerAngles = new Vector3(_tail.Bones[i].localEulerAngles.x, _tailAngles[i], _tail.Bones[i].localEulerAngles.z);
+                    else if(_tailAxis[i] == new Vector3(0, 0, 1)) _tail.Bones[i].localEulerAngles = new Vector3(_tail.Bones[i].localEulerAngles.x, _tail.Bones[i].localEulerAngles.y, _tailAngles[i]);*/
+                    //if(i==0) _tail.Bones[i].localRotation *= Quaternion.AngleAxis(13.727f, new Vector3(1,0,0));
+                    if (_tailAxis[i].x == 1) _tail.Bones[i].localEulerAngles = new Vector3(_tailAngles[i], 0, 0);
+                    else if (_tailAxis[i].y == 1) _tail.Bones[i].localEulerAngles = new Vector3(0, _tailAngles[i], 0);
+                    else if (_tailAxis[i].z == 1) _tail.Bones[i].localEulerAngles = new Vector3(0, 0, _tailAngles[i]);
                 }
             }
         }
@@ -153,19 +166,19 @@ namespace OctopusController
             Vector3 prevPoint = _tail.Bones[0].transform.position;
 
             Quaternion rotation = _tail.Bones[0].transform.rotation;
-            float angle;
-            Vector3 axis;
-
 
             for (int i = 1; i < _tail.Bones.Length; i++)
             {
+
                 //_tail.Bones[i - 1].rotation.ToAngleAxis(out angle, out axis);  //no
                 rotation *= Quaternion.AngleAxis(Solution[i - 1], _tailAxis[i - 1]);
                 Vector3 nextPoint = prevPoint + rotation * _tailOffset[i]; //Tampoco
+                Debug.DrawLine(prevPoint, nextPoint);
 
                 prevPoint = nextPoint;
             }
 
+            
             // The end of the effector
             return new PositionRotation(prevPoint, rotation);
         }
