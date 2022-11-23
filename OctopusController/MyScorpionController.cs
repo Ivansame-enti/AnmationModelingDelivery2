@@ -31,6 +31,8 @@ namespace OctopusController
             {
                 _legs[i] = new MyTentacleController();
                 _legs[i].LoadTentacleJoints(LegRoots[i], TentacleMode.LEG);
+                legTargets[i] = LegTargets[i];
+                legFutureBases[i] = LegFutureBases[i];
                 //TODO: initialize anything needed for the FABRIK implementation
             }
 
