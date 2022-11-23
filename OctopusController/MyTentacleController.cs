@@ -32,7 +32,14 @@ namespace OctopusController
             switch (tentacleMode){
                 case TentacleMode.LEG:
 
+                    _bones = new Transform[4];
+                    _bones[0] = root.GetChild(0);
+                    _bones[1] = _bones[0].GetChild(1);
+                    _bones[2] = _bones[1].GetChild(1);
+                    _bones[3] = _bones[2].GetChild(1);
+
                     //TODO: in _endEffectorsphere you keep a reference to the base of the leg
+                    _endEffectorSphere = _bones[3];
                     break;
                 case TentacleMode.TAIL:
                     _bones = new Transform[6];
