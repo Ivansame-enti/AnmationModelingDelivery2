@@ -41,8 +41,8 @@ namespace OctopusController
         float[] _tailAngles = null;
         Vector3[] _tailAxis = null;
         Vector3[] _tailOffset = null;
-        private float DeltaGradient = 0.1f; // Used to simulate gradient (degrees)
-        private float LearningRate = 3.0f; // How much we move depending on the gradient
+        private float _deltaGradient = 0.1f; // Used to simulate gradient (degrees)
+        private float _learningRate = 3.0f; // How much we move depending on the gradient
 
         //LEGS
         Transform[] legTargets;
@@ -125,8 +125,8 @@ namespace OctopusController
             {
                 for (int i = 0; i < _tail.Bones.Length; i++)
                 {
-                    float gradient = CalculateGradient(tailTarget.position, _tailAngles, i, DeltaGradient);
-                    _tailAngles[i] -= LearningRate * gradient;
+                    float gradient = CalculateGradient(tailTarget.position, _tailAngles, i, _deltaGradient);
+                    _tailAngles[i] -= _learningRate * gradient;
                 }
 
                 for (int i = 0; i < _tail.Bones.Length; i++)
