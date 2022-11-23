@@ -48,6 +48,22 @@ namespace OctopusController
                     //TODO: in _endEffectorsphere you keep a reference to the red sphere 
                     break;
                 case TentacleMode.TENTACLE:
+                    //IMPLEMENTAR EL END EFECTOR
+                    _bones = new Transform[53];
+
+                    root = root.GetChild(0).GetChild(0);
+                    _bones[0] = root;
+
+                    for (int i = 1; _bones[i - 1].childCount > 0; i++)
+
+                    {
+
+                        _bones[i] = _bones[i - 1].GetChild(0);
+                        //Debug.Log(_bones[i]); //FUNCIONA
+
+                    };
+                    //QUITAR ULTIMO ELEMENTO DEL BOUNDS[] 
+                    _endEffectorSphere = _bones[_bones.Length - 2];
 
                     //TODO: in _endEffectorphere you  keep a reference to the sphere with a collider attached to the endEffector
                     break;
