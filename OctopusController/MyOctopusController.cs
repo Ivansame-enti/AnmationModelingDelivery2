@@ -22,6 +22,11 @@ namespace OctopusController
 
         float _twistMin, _twistMax;
         float _swingMin, _swingMax;
+        bool region1b = false;
+        bool region2b = false;
+        bool region3b = false;
+        bool region4b = false;
+
 
         [SerializeField]
         GameObject[] joints;
@@ -118,14 +123,36 @@ namespace OctopusController
 
         public void NotifyTarget(Transform target, Transform region)
         {
+          
             _currentRegion = region;
             _target = target;
+
+           
         }
 
         public void NotifyShoot()
         {
             //TODO. what happens here?
             Debug.Log("Shoot");
+            Debug.Log(_currentRegion.name);
+            if (_currentRegion.name == "region1")
+            {
+                region1b = true;
+            }
+            else if (_currentRegion.name == "region2")
+            {
+
+                region2b = true;
+            }
+            else if (_currentRegion.name == "region3")
+            {
+                region3b = true;
+            }
+            else if (_currentRegion.name == "region4")
+            {
+                region4b = true;
+            }
+          
         }
 
 
@@ -151,11 +178,57 @@ namespace OctopusController
 
 
 
+               
 
-
-
-                        for (int i = _tentacles[1].Bones.Length - 2; i >= 0; i--)
+                        for (int i = _tentacles[t].Bones.Length - 2; i >= 0; i--)
                         {
+
+
+                            if (region1b == true && t==0) //HA DISPARADO a la region1 y mueves el brazo 1
+                            {
+                                Debug.Log("EntraDisparoRegion1");
+                                Vector3 r1 = (_tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position - _tentacles[t].Bones[i].transform.position).normalized;
+                               
+                                Vector3 r2 = (_target.transform.position - _tentacles[t].Bones[i].transform.position).normalized;
+                               
+                                if (r1.magnitude * r2.magnitude <= 0.001f)
+                                {
+                                   
+                                }
+                                else
+                                {
+                                  
+                                    _cos[i] = Vector3.Dot(r1, r2);
+                                    Vector3 CrossR1R2 = Vector3.Cross(r1, r2);
+                                    _sin[i] = CrossR1R2.magnitude;
+                                }
+
+                              
+                                Vector3 axis = Vector3.Cross(r1, r2).normalized;
+                                _theta[i] = Mathf.Acos(_cos[i]);
+
+                            
+                                if (_sin[i] < 0)
+                                {
+                                    _theta[i] = -_theta[i];
+
+                                }
+                               
+                                _theta[i] = (180 / Mathf.PI) * _theta[i]; //THETA EN GRADOS 
+
+                               
+                                _tentacles[t].Bones[i].transform.Rotate(axis, _theta[i], Space.World);
+
+
+                            }
+
+
+
+
+
+
+                            else { 
+
 
 
                             //Debug.Log(_tentacles[1].Bones[_tentacles[1].Bones.Length -1]);
@@ -176,11 +249,11 @@ namespace OctopusController
                                 // cos ? sin? 
 
 
-                                Debug.Log("algo");
+                               // Debug.Log("algo");
                             }
                             else
                             {
-                                Debug.Log("algo2");
+                               // Debug.Log("algo2");
 
                                 _cos[i] = Vector3.Dot(r1, r2);
                                 // Debug.Log(_cos[i]);
@@ -188,7 +261,7 @@ namespace OctopusController
                                 _sin[i] = CrossR1R2.magnitude;
                                 // Debug.Log(_sin[i]);
 
-                                Debug.Log("BuenosDias");
+                              //  Debug.Log("BuenosDias");
                             }
 
                             // The axis of rotation 
@@ -211,12 +284,16 @@ namespace OctopusController
                             // obtain an angle value between -pi and pi, and then convert to degrees
                             _theta[i] = (180 / Mathf.PI) * _theta[i]; //THETA EN GRADOS 
 
-                            // rotate the ith joint along the axis by theta degrees in the world space.
-
-                            _tentacles[t].Bones[i].transform.Rotate(axis, _theta[i], Space.World);
-                            Debug.Log("se movio");
+                                // rotate the ith joint along the axis by theta degrees in the world space.
+                                if (_theta[i] > 0.1)
+                                {
+                                    _tentacles[t].Bones[i].transform.Rotate(axis, _theta[i], Space.World);
+                                }
+                          
+                            //Debug.Log("se movio");
                             // Debug.Log(_tentacles[t].Bones[i].transform.position);
 
+                        }
                         }
 
                         // increment tries
@@ -251,7 +328,7 @@ namespace OctopusController
                     if (_tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position != _randomTargets[t].transform.position)
                     {
                         _tries = 0;
-                        _randomTargets[t].transform.position = _tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position;
+                       // _randomTargets[t].transform.position = _tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position;
                     }
 
                 }
