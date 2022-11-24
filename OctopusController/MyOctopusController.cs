@@ -26,7 +26,7 @@ namespace OctopusController
         bool region2b = false;
         bool region3b = false;
         bool region4b = false;
-
+        Transform ramdomTargetPositionFinal;
 
         [SerializeField]
         GameObject[] joints;
@@ -123,11 +123,11 @@ namespace OctopusController
 
         public void NotifyTarget(Transform target, Transform region)
         {
-          
+
             _currentRegion = region;
             _target = target;
 
-           
+
         }
 
         public void NotifyShoot()
@@ -152,193 +152,180 @@ namespace OctopusController
             {
                 region4b = true;
             }
-          
+
         }
 
 
         public void UpdateTentacles()
         {
-
-            //TODO: implement logic for the correct tentacle arm to stop the ball and implement CCD method
-            actualiza();
-        }
-        void actualiza()
-        {
-            // Debug.Log("HOLAAAAAAAAAAAAAAA");
-
             if (!_done)
             {
 
                 for (int t = 0; t < _tentacles.Length; t++)
                 {
 
-                    if (_tries <= _mtries)
+                    if (region1b == true && t == 0)
                     {
-                        // tpos = new Vector3(_randomTargets[1].transform.position.x, _randomTargets[1].transform.position.y, _randomTargets[1].transform.position.z);
+                        Debug.Log(_currentRegion.position);
+                        actualiza(t, _target);
 
-
-
-               
-
-                        for (int i = _tentacles[t].Bones.Length - 2; i >= 0; i--)
-                        {
-
-
-                            if (region1b == true && t==0) //HA DISPARADO a la region1 y mueves el brazo 1
-                            {
-                                Debug.Log("EntraDisparoRegion1");
-                                Vector3 r1 = (_tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position - _tentacles[t].Bones[i].transform.position).normalized;
-                               
-                                Vector3 r2 = (_target.transform.position - _tentacles[t].Bones[i].transform.position).normalized;
-                               
-                                if (r1.magnitude * r2.magnitude <= 0.001f)
-                                {
-                                   
-                                }
-                                else
-                                {
-                                  
-                                    _cos[i] = Vector3.Dot(r1, r2);
-                                    Vector3 CrossR1R2 = Vector3.Cross(r1, r2);
-                                    _sin[i] = CrossR1R2.magnitude;
-                                }
-
-                              
-                                Vector3 axis = Vector3.Cross(r1, r2).normalized;
-                                _theta[i] = Mathf.Acos(_cos[i]);
-
-                            
-                                if (_sin[i] < 0)
-                                {
-                                    _theta[i] = -_theta[i];
-
-                                }
-                               
-                                _theta[i] = (180 / Mathf.PI) * _theta[i]; //THETA EN GRADOS 
-
-                               
-                                _tentacles[t].Bones[i].transform.Rotate(axis, _theta[i], Space.World);
-
-
-                            }
-
-
-
-
-
-
-                            else { 
-
-
-
-                            //Debug.Log(_tentacles[1].Bones[_tentacles[1].Bones.Length -1]);
-                            // Debug.Log(_tentacles[1].Bones[53]);
-                            // The vector from the ith joint to the end effector
-                            Vector3 r1 = (_tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position - _tentacles[t].Bones[i].transform.position).normalized;
-                            //Debug.Log(r1);
-                            // Debug.Log(r1.magnitude);
-                            //Debug.Log("algo");
-                            // The vector from the ith joint to the target
-                            Vector3 r2 = (_randomTargets[t].transform.position - _tentacles[t].Bones[i].transform.position).normalized;
-                            //Vector3 r2 = new Vector3(1, 1, 1);
-                            // Debug.Log(r2.magnitude);
-                            // to avoid dividing by tiny numbers
-                            //Debug.Log(r2);
-                            if (r1.magnitude * r2.magnitude <= 0.001f)
-                            {
-                                // cos ? sin? 
-
-
-                               // Debug.Log("algo");
-                            }
-                            else
-                            {
-                               // Debug.Log("algo2");
-
-                                _cos[i] = Vector3.Dot(r1, r2);
-                                // Debug.Log(_cos[i]);
-                                Vector3 CrossR1R2 = Vector3.Cross(r1, r2);
-                                _sin[i] = CrossR1R2.magnitude;
-                                // Debug.Log(_sin[i]);
-
-                              //  Debug.Log("BuenosDias");
-                            }
-
-                            // The axis of rotation 
-                            Vector3 axis = Vector3.Cross(r1, r2).normalized;
-
-                            // find the angle between r1 and r2 (and clamp values if needed avoid errors)
-                            //theta[i] = TODO6 //ARCOSENO
-                            _theta[i] = Mathf.Acos(_cos[i]);
-
-                            //Optional. correct angles if needed, depending on angles invert angle if sin component is negative
-                            if (_sin[i] < 0)
-                            {
-                                _theta[i] = -_theta[i];
-
-                            }
-                            //	theta[i] = TODO7
-
-
-
-                            // obtain an angle value between -pi and pi, and then convert to degrees
-                            _theta[i] = (180 / Mathf.PI) * _theta[i]; //THETA EN GRADOS 
-
-                                // rotate the ith joint along the axis by theta degrees in the world space.
-                                if (_theta[i] > 0.1)
-                                {
-                                    _tentacles[t].Bones[i].transform.Rotate(axis, _theta[i], Space.World);
-                                }
-                          
-                            //Debug.Log("se movio");
-                            // Debug.Log(_tentacles[t].Bones[i].transform.position);
-
-                        }
-                        }
-
-                        // increment tries
-                        _tries++;
                     }
-
-
-
-
+                    else if (region2b == true && t == 1)
+                    {
+                        Debug.Log("Se mueve2");
+                        actualiza(t, _target);
+                    }
+                    else if (region3b == true && t == 2)
+                    {
+                        Debug.Log("Se mueve3");
+                        actualiza(t, _target);
+                    }
+                    else if (region4b == true && t == 3)
+                    {
+                        Debug.Log("Se mueve4");
+                        actualiza(t, _target);
+                    }
+                    else
+                    {
+                        Debug.Log("Se mueve random");
+                        actualiza(t, _randomTargets[t]);
+                    }
                 }
-
             }
 
             for (int t = 0; t < _tentacles.Length; t++)
             {
                 {
+                    Vector3 diferenciaCOSAS;
+                    if (region1b == true && t == 0)
+                    {
+                        diferenciaCOSAS = _target.transform.position - _tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position;
+                        if (diferenciaCOSAS.magnitude <= _epsilon)
+                        {
+                            _done = true;
+                        }
+                        else
+                        {
+                            _done = false;
+                        }
+                        if (_tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position != _target.transform.position)
+                        {
+                            _tries = 0;
+                        }
 
-                    Vector3 diferenciaCOSAS = _randomTargets[t].transform.position - _tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position;
+                    }
+                    else if (region2b == true && t == 1)
+                    {
+                        diferenciaCOSAS = _target.transform.position - _tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position;
+                        if (diferenciaCOSAS.magnitude <= _epsilon)
+                        {
+                            _done = true;
+                        }
+                        else
+                        {
+                            _done = false;
+                        }
+                        if (_tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position != _target.transform.position)
+                        {
+                            _tries = 0;
+                        }
 
-                    // if target is within reach (within epsilon) then the process is done
+                    }
+                    else if (region3b == true && t == 2)
+                    {
+                        diferenciaCOSAS = _target.transform.position - _tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position;
+                        if (diferenciaCOSAS.magnitude <= _epsilon)
+                        {
+                            _done = true;
+                        }
+                        else
+                        {
+                            _done = false;
+                        }
+                        if (_tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position != _target.transform.position)
+                        {
+                            _tries = 0;
+                        }
+
+                    }
+                   else if (region4b == true && t == 3)
+                    {
+                        diferenciaCOSAS = _target.transform.position - _tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position;
+                        if (diferenciaCOSAS.magnitude <= _epsilon)
+                        {
+                            _done = true;
+                        }
+                        else
+                        {
+                            _done = false;
+                        }
+                        if (_tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position != _target.transform.position)
+                        {
+                            _tries = 0;
+                        }
+
+                    }
+                    else
+                    {
+                     diferenciaCOSAS = _randomTargets[t].transform.position - _tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position;
                     if (diferenciaCOSAS.magnitude <= _epsilon)
                     {
                         _done = true;
                     }
-                    // if it isn't, then the process should be repeated
                     else
                     {
                         _done = false;
                     }
-
-                    // the target has moved, reset tries to 0 and change tpos
                     if (_tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position != _randomTargets[t].transform.position)
                     {
                         _tries = 0;
-                       // _randomTargets[t].transform.position = _tentacles[t].Bones[_tentacles[t].Bones.Length - 2].transform.position;
                     }
-
+                    }
+                  
                 }
             }
 
+        }
+        void actualiza(int numeroTentaculo, Transform targetPosT)
+        {
 
 
+            if (_tries <= _mtries)
+            {
 
-            #endregion
+                for (int i = _tentacles[numeroTentaculo].Bones.Length - 2; i >= 0; i--)
+                {
 
+                    Vector3 r1 = (_tentacles[numeroTentaculo].Bones[_tentacles[numeroTentaculo].Bones.Length - 2].transform.position - _tentacles[numeroTentaculo].Bones[i].transform.position).normalized;
+
+                    Vector3 r2 = (targetPosT.transform.position - _tentacles[numeroTentaculo].Bones[i].transform.position).normalized;
+                    if (r1.magnitude * r2.magnitude <= 0.001f)
+                    {
+                    }
+                    else
+                    {
+                        _cos[i] = Vector3.Dot(r1, r2);
+                        Vector3 CrossR1R2 = Vector3.Cross(r1, r2);
+                        _sin[i] = CrossR1R2.magnitude;
+
+                    }
+
+                    Vector3 axis = Vector3.Cross(r1, r2).normalized;
+                    _theta[i] = Mathf.Acos(_cos[i]);
+                    if (_sin[i] < 0)
+                    {
+                        _theta[i] = -_theta[i];
+
+                    }
+                    _theta[i] = (180 / Mathf.PI) * _theta[i]; //THETA EN GRADOS 
+                    if (_theta[i] > 0.1)
+                    {
+                        _tentacles[numeroTentaculo].Bones[i].transform.Rotate(axis, _theta[i], Space.World);
+                    }
+
+                }
+                _tries++;
+            }
 
 
 
@@ -346,5 +333,20 @@ namespace OctopusController
 
 
         }
+
+
+
+
+
+
+        #endregion
+
+
+
+
+        
+
+
     }
 }
+
