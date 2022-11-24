@@ -35,14 +35,13 @@ namespace OctopusController
     {
         //TAIL
         Transform tailTarget;
-        Transform tailEndEffector;
         MyTentacleController _tail;
-        float animationRange;
         float[] _tailAngles = null;
         Vector3[] _tailAxis = null;
         Vector3[] _tailOffset = null;
         private float _deltaGradient = 0.1f; // Used to simulate gradient (degrees)
         private float _learningRate = 3.0f; // How much we move depending on the gradient
+        private float _distanceThreshold = 5.0f;
 
         //LEGS
         Transform[] legTargets;
@@ -86,26 +85,24 @@ namespace OctopusController
             }
         }
 
-        //TODO: Check when to start the animation towards target and implement Gradient Descent method to move the joints.
+        //Check when to start the animation towards target and implement Gradient Descent method to move the joints.
         public void NotifyTailTarget(Transform target)
         {
-            if (Vector3.Distance(_tail.Bones[_tail.Bones.Length - 1].position, target.position) < 3)
+            if (Vector3.Distance(_tail.Bones[_tail.Bones.Length - 1].position, target.position) < _distanceThreshold)
             {
                 tailTarget = target;
             }
         }
 
-        //TODO: Notifies the start of the walking animation
+        //Notifies the start of the walking animation
         public void NotifyStartWalk()
         {
 
         }
 
-        //TODO: create the apropiate animations and update the IK from the legs and tail
-
+        //Create the apropiate animations and update the IK from the legs and tail
         public void UpdateIK()
         {
-            //TODO
             updateTail();
         }
         #endregion
@@ -118,7 +115,8 @@ namespace OctopusController
             //check for the distance to the futureBase, then if it's too far away start moving the leg towards the future base position
             //
         }
-        //TODO: implement Gradient Descent method to move tail if necessary
+
+        //Implement Gradient Descent method to move tail if necessary
         private void updateTail()
         {
             if (tailTarget != null)
@@ -131,11 +129,6 @@ namespace OctopusController
 
                 for (int i = 0; i < _tail.Bones.Length; i++)
                 {
-                    //_tail.Bones[i].localRotation = Quaternion.AngleAxis(_tailAngles[i], _tailAxis[i]);
-                    /*if (_tailAxis[i] == new Vector3(1,0,0)) _tail.Bones[i].localEulerAngles = new Vector3(_tailAngles[i], _tail.Bones[i].localEulerAngles.y, _tail.Bones[i].localEulerAngles.z);
-                    else if (_tailAxis[i] == new Vector3(0, 1, 0)) _tail.Bones[i].localEulerAngles = new Vector3(_tail.Bones[i].localEulerAngles.x, _tailAngles[i], _tail.Bones[i].localEulerAngles.z);
-                    else if(_tailAxis[i] == new Vector3(0, 0, 1)) _tail.Bones[i].localEulerAngles = new Vector3(_tail.Bones[i].localEulerAngles.x, _tail.Bones[i].localEulerAngles.y, _tailAngles[i]);*/
-                    //if(i==0) _tail.Bones[i].localRotation *= Quaternion.AngleAxis(13.727f, new Vector3(1,0,0));
                     if (_tailAxis[i].x == 1) _tail.Bones[i].localEulerAngles = new Vector3(_tailAngles[i], 0, 0);
                     else if (_tailAxis[i].y == 1) _tail.Bones[i].localEulerAngles = new Vector3(0, _tailAngles[i], 0);
                     else if (_tailAxis[i].z == 1) _tail.Bones[i].localEulerAngles = new Vector3(0, 0, _tailAngles[i]);
@@ -165,20 +158,16 @@ namespace OctopusController
         {
             Vector3 prevPoint = _tail.Bones[0].transform.position;
 
-            Quaternion rotation = _tail.Bones[0].transform.rotation;
+            Quaternion rotation = _tail.Bones[0].transform.parent.rotation;
 
             for (int i = 1; i < _tail.Bones.Length; i++)
             {
-
-                //_tail.Bones[i - 1].rotation.ToAngleAxis(out angle, out axis);  //no
                 rotation *= Quaternion.AngleAxis(Solution[i - 1], _tailAxis[i - 1]);
-                Vector3 nextPoint = prevPoint + rotation * _tailOffset[i]; //Tampoco
+                Vector3 nextPoint = prevPoint + rotation * _tailOffset[i];
                 Debug.DrawLine(prevPoint, nextPoint);
 
                 prevPoint = nextPoint;
-            }
-
-            
+            }            
             // The end of the effector
             return new PositionRotation(prevPoint, rotation);
         }
