@@ -22,6 +22,8 @@ namespace OctopusController
 
         float _twistMin, _twistMax;
         float _swingMin, _swingMax;
+        float _timer = 0f;
+        float TIMER_ENDED = 3f;
 
         bool _region1b = false;
         bool _region2b = false;
@@ -100,7 +102,9 @@ namespace OctopusController
 
         public void NotifyShoot()
         {
+
             Debug.Log("Shoot");
+
             if (_currentRegion.name == "region1")
             {
                 _region1b = true;
@@ -150,37 +154,58 @@ namespace OctopusController
                         ApplyCCD(t, _randomTargets[t]);
                     }
                 }
+
+                if (_region1b || _region2b || _region3b || _region3b || _region4b) TimerReset();
             }
 
             for (int t = 0; t < _tentacles.Length; t++)
             {
                 if (_region1b == true && t == 0)
                 {
-                    UpdateTentacle(t, _target);
+                    ResetTentacle(t, _target);
 
                 }
                 else if (_region2b == true && t == 1)
                 {
-                    UpdateTentacle(t, _target);
+                    ResetTentacle(t, _target);
                 }
                 else if (_region3b == true && t == 2)
                 {
-                    UpdateTentacle(t, _target);
+                    ResetTentacle(t, _target);
 
                 }
                 else if (_region4b == true && t == 3)
                 {
-                    UpdateTentacle(t, _target);
+                    ResetTentacle(t, _target);
 
                 }
                 else
                 {
-                    UpdateTentacle(t, _randomTargets[t]);
+                    ResetTentacle(t, _randomTargets[t]);
                 }
             }
         }
 
-        void UpdateTentacle(int t, Transform target)
+        void TimerReset()
+        {
+            if (_timer >= TIMER_ENDED)
+            {
+                _region1b = false;
+                _region2b = false;
+                _region3b = false;
+                _region4b = false;
+                _timer = 0f;
+            }
+            else
+            {
+                _timer += Time.deltaTime;
+            }
+
+
+
+        }
+
+        void ResetTentacle(int t, Transform target)
         {
             Vector3 distance;
 
