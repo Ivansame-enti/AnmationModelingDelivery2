@@ -20,12 +20,12 @@ namespace OctopusController
         Transform[] legTargets = null;
         Transform[] legRoots = null;
         Transform[] legFutureBases = null;
-        Vector3[][] copy = null;
+        Vector3[] copy = null;
         Transform[] legBones = null;
         MyTentacleController[] _legs = new MyTentacleController[6];
         private float[] distances = null;
         bool startWalk;
-
+        Vector3[] inversePositions = null;
 
         #region public
         public void InitLegs(Transform[] LegRoots, Transform[] LegFutureBases, Transform[] LegTargets)
@@ -39,18 +39,29 @@ namespace OctopusController
 
             for (int i = 0; i < _legs.Length; i++)
             {
+                copy = new Vector3[_legs[i].Bones.Length];
+                distances = new float[_legs[i].Bones.Length];
                 for (int x = 0; x < _legs[i].Bones.Length; x++)
                 {
-                    copy = new Vector3[_legs.Length][];
-                    distances = new float[_legs[i].Bones.Length];
+
+                    if (i < _legs[i].Bones.Length - 1)
+                    {
+                        distances[i] = (_legs[i + 1].Bones[x].position - _legs[i].Bones[x].position).magnitude;
+                    }
+                    else
+                    {
+                        distances[i] = 0f;
+                    }
                 }
+                
             }
-                    //copy = new Transform[LegRoots.Length][];
-                    //joints = new Transform[LegRoots.Length];
+
+            //copy = new Transform[LegRoots.Length][];
+            //joints = new Transform[LegRoots.Length];
 
 
-                    //Legs init
-                    for (int i = 0; i < LegRoots.Length; i++)
+            //Legs init
+            for (int i = 0; i < LegRoots.Length; i++)
             {
                 _legs[i] = new MyTentacleController();
                 _legs[i].LoadTentacleJoints(LegRoots[i], TentacleMode.LEG);
@@ -141,7 +152,8 @@ namespace OctopusController
             {
                 for (int x = 0; x < _legs[i].Bones.Length; x++)
                 {
-                    copy[i][x] = _legs[i].Bones[x].position;
+                    copy[x] = _legs[i].Bones[x].position;
+                    Debug.Log(copy[x]);
                 }
 
             }
@@ -154,7 +166,7 @@ namespace OctopusController
 
             for (int i = 0; i < _legs.Length; i++)
             {
-                targetRootDist = Vector3.Distance(copy[i][0], legTargets[i].position);
+                targetRootDist = Vector3.Distance(copy[0], legTargets[i].position);
             }
             // Update joint positions
             if (targetRootDist > distances.Sum())
@@ -166,7 +178,7 @@ namespace OctopusController
                 {
                     for (int x = 0; x < _legs[i].Bones.Length; x++)
                     {
-                        _legs[i].Bones[x].transform.position = copy[i][x];
+                        _legs[i].Bones[x].transform.position = copy[x];
                         //TODO 
                     }
 
@@ -181,25 +193,26 @@ namespace OctopusController
                 // STAGE 1: FORWARD REACHING
                 //TODO
 
-                Vector3[][] inversePositions = new Vector3[_legs.Length][];
+                
                 for (int i = (copy.Length - 1); i >= 0; i--)
                 {
+                    inversePositions = new Vector3[_legs[i].Bones.Length];
                     for (int x = 0; x < _legs[i].Bones.Length; x++)
                     {
-                        if (x == copy[x].Length - 1)
+                        if (x == copy.Length - 1)
                         {
-                            copy[i][x] = legTargets[i].position;
-                            inversePositions[i][x] = legTargets[i].position;
+                            copy[x] = legTargets[i].position;
+                            inversePositions[x] = legTargets[i].position;
                             //copyInverse[i] = target.position;
                         }
                         else
                         {
                             //Vector3 posPrimaSiguiente = copy[i + 1];
-                            Vector3 posPrimaSiguiente = inversePositions[i][x + 1];
-                            Vector3 posBaseActual = copy[i][x];
+                            Vector3 posPrimaSiguiente = inversePositions[x + 1];
+                            Vector3 posBaseActual = copy[x];
                             Vector3 direccion = (posBaseActual - posPrimaSiguiente).normalized;
                             float longitud = distances[x];
-                            inversePositions[i][x] = posPrimaSiguiente + (direccion * longitud);
+                            inversePositions[x] = posPrimaSiguiente + (direccion * longitud);
                         }
                     }
                 }
@@ -211,15 +224,15 @@ namespace OctopusController
                     {
                         if (x == 0)
                         {
-                            copy[i][x] = _legs[i].Bones[0].position;
+                            copy[x] = _legs[i].Bones[0].position;
                         }
                         else
                         {
-                            Vector3 posPrimaActual = inversePositions[i][x];
-                            Vector3 posPrimaSegundaAnterior = copy[i][x - 1];
-                            Vector3 direccion = (posPrimaActual - copy[i][x - 1]).normalized;
+                            Vector3 posPrimaActual = inversePositions[x];
+                            Vector3 posPrimaSegundaAnterior = copy[x - 1];
+                            Vector3 direccion = (posPrimaActual - copy[x - 1]).normalized;
                             float longitud = distances[i - 1];
-                            copy[i][x] = posPrimaSegundaAnterior + (direccion * longitud);
+                            copy[x] = posPrimaSegundaAnterior + (direccion * longitud);
                         }
                     }
                 }
@@ -232,7 +245,7 @@ namespace OctopusController
                 {
 
                     Vector3 joint01 = (_legs[i].Bones[x + 1].position - _legs[i].Bones[x].position).normalized;
-                    Vector3 copy01 = (copy[i][x + 1] - copy[i][x]).normalized;
+                    Vector3 copy01 = (copy[x + 1] - copy[x]).normalized;
 
 
                     //Crossproduct
