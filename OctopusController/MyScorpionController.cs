@@ -30,7 +30,7 @@ namespace OctopusController
         #region public
         public void InitLegs(Transform[] LegRoots, Transform[] LegFutureBases, Transform[] LegTargets)
         {
-            
+            Debug.Log("Tamaño: " + LegRoots.Length);
             _legs = new MyTentacleController[LegRoots.Length];
             legBones = new Transform[LegRoots.Length];
             legRoots = new Transform[LegRoots.Length];
@@ -41,10 +41,11 @@ namespace OctopusController
 
             //copy = new Transform[LegRoots.Length][];
             //joints = new Transform[LegRoots.Length];
-
+            
             //Legs init
             for (int i = 0; i < LegRoots.Length; i++)
             {
+                
                 //DICCIONARIO
                 _legs[i] = new MyTentacleController();
                 _legs[i].LoadTentacleJoints(LegRoots[i], TentacleMode.LEG);
@@ -56,9 +57,10 @@ namespace OctopusController
                 copy.Add(new Vector3[_legs[i].Bones.Length]);
                 distances.Add(new float[_legs[i].Bones.Length]);
                 
-                for(int x = 0; x < _legs[i].Bones.Length;x++)
+                for(int x = 0; x < _legs[i].Bones.Length; x++)
                 {
-                    if (i < _legs[i].Bones.Length - 1)
+                    Debug.Log("Dentro del for:" + x);
+                    if (x < _legs[i].Bones.Length - 1)
                     {
                         distances[i][x] = (_legs[i].Bones[x + 1].position - _legs[i].Bones[x].position).magnitude;
                     }
