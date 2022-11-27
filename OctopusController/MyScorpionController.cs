@@ -119,7 +119,7 @@ namespace OctopusController
             //check for the distance to the futureBase, then if it's too far away start moving the leg towards the future base position
             for(int i = 0; i < _legs.Length; i++)
             {
-                if (Vector3.Distance(legRoots[i].position, legFutureBases[i].position) > 1.5f)
+                if ((legFutureBases[i].position - legRoots[i].position).magnitude > 1.5f)
                 {
                     legRoots[i].position = legFutureBases[i].position;
                 }
