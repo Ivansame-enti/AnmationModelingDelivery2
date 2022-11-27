@@ -54,13 +54,6 @@ C:\Users\ivan.sales\Desktop\AnmationModelingDelivery2\OctopusController\obj\Debu
 C:\Users\ivan.sales\Desktop\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.csproj.CopyComplete
 C:\Users\ivan.sales\Desktop\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.dll
 C:\Users\ivan.sales\Desktop\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.pdb
-C:\Users\didac\Documents\Github\AnmationModelingDelivery2\OctopusController\bin\Debug\OctopusController.dll
-C:\Users\didac\Documents\Github\AnmationModelingDelivery2\OctopusController\bin\Debug\OctopusController.pdb
-C:\Users\didac\Documents\Github\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.csproj.CoreCompileInputs.cache
-C:\Users\didac\Documents\Github\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.csproj.CopyComplete
-C:\Users\didac\Documents\Github\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.dll
-C:\Users\didac\Documents\Github\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.pdb
-C:\Users\didac\Documents\Github\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.csproj.AssemblyReference.cache
 C:\Users\ivans\OneDrive\Escritorio\Enti_3\Modelaje\AnmationModelingDelivery2\OctopusController\bin\Debug\OctopusController.dll
 C:\Users\ivans\OneDrive\Escritorio\Enti_3\Modelaje\AnmationModelingDelivery2\OctopusController\bin\Debug\OctopusController.pdb
 C:\Users\ivans\OneDrive\Escritorio\Enti_3\Modelaje\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.csproj.AssemblyReference.cache
@@ -68,3 +61,10 @@ C:\Users\ivans\OneDrive\Escritorio\Enti_3\Modelaje\AnmationModelingDelivery2\Oct
 C:\Users\ivans\OneDrive\Escritorio\Enti_3\Modelaje\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.csproj.CopyComplete
 C:\Users\ivans\OneDrive\Escritorio\Enti_3\Modelaje\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.dll
 C:\Users\ivans\OneDrive\Escritorio\Enti_3\Modelaje\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.pdb
+C:\Users\didac\Documents\Github\AnmationModelingDelivery2\OctopusController\bin\Debug\OctopusController.dll
+C:\Users\didac\Documents\Github\AnmationModelingDelivery2\OctopusController\bin\Debug\OctopusController.pdb
+C:\Users\didac\Documents\Github\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.csproj.AssemblyReference.cache
+C:\Users\didac\Documents\Github\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.csproj.CoreCompileInputs.cache
+C:\Users\didac\Documents\Github\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.csproj.CopyComplete
+C:\Users\didac\Documents\Github\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.dll
+C:\Users\didac\Documents\Github\AnmationModelingDelivery2\OctopusController\obj\Debug\OctopusController.pdb

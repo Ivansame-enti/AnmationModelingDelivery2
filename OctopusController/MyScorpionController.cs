@@ -25,6 +25,8 @@ namespace OctopusController
         bool startWalk;
         private List<Vector3[]> copy;
         private List<float[]> distances;
+        private bool away = false;
+
 
 
         #region public
@@ -38,7 +40,6 @@ namespace OctopusController
             legFutureBases = new Transform[LegFutureBases.Length];
             copy = new List<Vector3[]>();
             distances = new List<float[]>();
-
             //copy = new Transform[LegRoots.Length][];
             //joints = new Transform[LegRoots.Length];
             
@@ -102,11 +103,11 @@ namespace OctopusController
         public void UpdateIK()
         {
 
-            //if (startWalk)
-            //{
-            //updateLegPos();
+            if (startWalk)
+            {
             updateLegs();
-            //}
+            updateLegPos();
+            }
         }
         #endregion
 
@@ -116,6 +117,14 @@ namespace OctopusController
         private void updateLegPos()
         {
             //check for the distance to the futureBase, then if it's too far away start moving the leg towards the future base position
+            for(int i = 0; i < _legs.Length; i++)
+            {
+                if (Vector3.Distance(legRoots[i].position, legFutureBases[i].position) > 1.5f)
+                {
+                    legRoots[i].position = legFutureBases[i].position;
+                }
+            }
+            
 
 
         }
@@ -134,15 +143,14 @@ namespace OctopusController
         //TODO: implement fabrik method to move legs 
         private void updateLegs()
         {
-            for(int i = 0; i < _legs.Length; i++)
+            for (int i = 0; i < _legs.Length; i++)
             {
-                
-                fabrik(_legs[i].Bones,legTargets[i],distances[i],copy[i]);
+                fabrik(_legs[i].Bones, legTargets[i], distances[i], copy[i], legFutureBases[i]);
             }
             
         }
         //COPIAR Y PEGAR DE FABRIK PERO LE PASAMOS LOS PARAMETROS QUE NECESITA FABRIK
-        public void fabrik(Transform[] joints,Transform target,float[] distances, Vector3[] copy)
+        public void fabrik(Transform[] joints,Transform target,float[] distances, Vector3[] copy,Transform futurBase)
         {
             // Copy the joints positions to work with
 
@@ -166,17 +174,17 @@ namespace OctopusController
                 // The target is unreachable
                 for (int i = 0; i <= joints.Length - 2; i++)
                 {
+                    
                     joints[i].transform.position = copy[i];
+                    //joints[0].transform.position = futurBase.transform.position;
                     Debug.Log(joints[2]);
                 }
                 //TODO 
-
-
             }
 
             else
             {
-
+                //awayF = false;
                 // The target is reachable
                 //while (TODO)
 
